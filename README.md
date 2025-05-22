@@ -41,15 +41,13 @@ Implement a proof of concept for a microcontroller streaming event data from the
 For efficiency reasons, we want to stream the events via a websockets subscription as this is much less resource intensive for both the server and the client as opposed to polling. 
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="300" />
-  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="300" />
-  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="300" /> 
+  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="270" />
+  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="270" />
+  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="270" /> 
 </p>
 
 
-Project Hummingbird is a collaboration between [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik), and [me](https://www.linkedin.com/in/alexander-hentschel/), building on our shared interest in decentralized automation and resilient infrastructure. 
-
-This is **joint work** of ****, **** and **myself**. Please check out their GitHub repos:
+Project Hummingbird is a collaboration between [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik), and [me](https://www.linkedin.com/in/alexander-hentschel/), building on our shared interest in decentralized automation and resilient infrastructure. Please check out their GitHub repos:
 * [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
    - Initial concept for getting the height of the latest sealed or latest finalized block.
    - [Cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird.
