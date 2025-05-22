@@ -19,7 +19,15 @@ _Dependencies:_
 
 ### `WiFiCredentials.h`
 
-The files `iFiCredentials.h` will need to be modified by providing ifi ssid and password. To avoid accidentally committing private information, this short `bash` command provides a simple solution:
+The files `WiFiCredentials.h` will need to be modified by providing ifi ssid and password. Currently, the implementation expects the following parameters: 
+```
+#define WIFI_SSID "..."
+#define WIFI_PASS "..."
+```
+
+
+
+To avoid accidentally committing private information, this short `bash` command provides a simple solution:
 ```bash
 for file in $(find . -type f -name "WiFiCredentials\.h"); do
  git update-index --skip-worktree  "${file}"; done 
