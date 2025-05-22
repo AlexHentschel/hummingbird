@@ -41,9 +41,20 @@ For efficiency reasons, we want to stream the events via a websockets subscripti
 _Dependencies:_
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library by Benoit Blanchon for parsing json
 
+_Flow_:
+* Our proof of concept runs on the [Flow blockchain](https://flow.com/), specifically the [Flow Testnet](https://developers.flow.com/networks/flow-networks/accessing-testnet). 
+
 ## Results and Technical Demonstrator
 
 🎥 Watch the [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of Project Hummingbird: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events.
+
+This is joint work of [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik) and myself. Please check out their repos:
+* [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
+   - initial concept for getting the height of the latest sealed or latest finalized block
+   - [cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird
+   - logic for preparing a cadence transaction to provide new inputs to the on-chain orchestrator; we directly use this in Project Hummingbird
+   - first working prototype for getting chain data via script execution from an Access Node; we build on Janes' work in Project Hummingbird to restore the microcontrollers initial state after rebooting
+* 
 
 ![alt-text-1](image1.png "title-1") ![alt-text-2](image2.png "title-2")
 
