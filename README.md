@@ -23,13 +23,38 @@ It’s a small, tangible proof of concept of how a blockchain can manage real-wo
 
 ### Why it matters
 
-Project Hummingbird is just the beginning. Imagine resilient blockchain infrastructure controlling the charging of electric cars, operating smart homes, and coordinating decentralized renewable energy production — optimizing energy use, saving costs, and empowering users to control their own data and devices. If you're curious, check out my post: [Blockchain for Decentralized Critical Infrastructure for the broader vision.](https://www.linkedin.com/pulse/blockchain-decentralized-critical-infrastructure-alexander-hentschel-kfvgc/)
+Project Hummingbird is just the beginning. Imagine resilient blockchain infrastructure controlling the charging of electric cars, operating smart homes, and coordinating decentralized renewable energy production — optimizing energy use, saving costs, and empowering users to control their own data and devices. 
+
+If you're curious, please check out: 
+* 🎥 my [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of **Project Hummingbird**: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events. In this 10-minute video, you'll get an overview over hackathon project, an end-to-end demo, the broader vision and why Flow is uniquely suited for this class of applications. 
+* my blog post [Blockchain for Decentralized Critical Infrastructure](https://www.linkedin.com/pulse/blockchain-decentralized-critical-infrastructure-alexander-hentschel-kfvgc/) is a concise but in-depth vision. 
+
+
+
 
 
 
 # Technical Proof of Concept
 Implement a proof of concept for a microcontroller streaming event data from the [official flow endpoints](https://developers.flow.com/networks/access-onchain-data/websockets-stream-api). 
 For efficiency reasons, we want to stream the events via a websockets subscription as this is much less resource intensive for both the server and the client as opposed to polling. 
+
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="300" />
+  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="300" />
+  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="300" /> 
+</p>
+
+
+This is **joint work** of **[Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127)**, **[Jan](https://www.linkedin.com/in/janbernatik)** and **myself**. Please check out their GitHub repos:
+* [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
+   - Initial concept for getting the height of the latest sealed or latest finalized block.
+   - [Cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird.
+   - Logic for preparing a cadence transaction to provide new inputs to the on-chain orchestrator; we directly use this in Project Hummingbird.
+   - First working prototype for getting chain data via script execution from an Access Node; we build on Janes' work in Project Hummingbird to restore the microcontroller's initial state after rebooting.
+* [j1010001/Flow-esp32-s3-touch-lcd-1.28](https://github.com/j1010001/Flow-esp32-s3-touch-lcd-1.28) 
+   - Human-friendly UX: querying the chain state (specifically sealed block via Flow Access Node API), and inspecting smart contract sate details via script execution. Interacting with the blockchain - and controlling your devices via the Flow blockchain - can be as easy as just tapping your smartwatch. 
+
+
 
 
 ## Setup
@@ -44,19 +69,6 @@ _Dependencies:_
 _Flow_:
 * Our proof of concept runs on the [Flow blockchain](https://flow.com/), specifically the [Flow Testnet](https://developers.flow.com/networks/flow-networks/accessing-testnet). 
 
-## Results and Technical Demonstrator
-
-🎥 Watch the [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of Project Hummingbird: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events.
-
-This is joint work of [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik) and myself. Please check out their repos:
-* [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
-   - initial concept for getting the height of the latest sealed or latest finalized block
-   - [cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird
-   - logic for preparing a cadence transaction to provide new inputs to the on-chain orchestrator; we directly use this in Project Hummingbird
-   - first working prototype for getting chain data via script execution from an Access Node; we build on Janes' work in Project Hummingbird to restore the microcontrollers initial state after rebooting
-* 
-
-![alt-text-1](image1.png "title-1") ![alt-text-2](image2.png "title-2")
 
 
 ## recommendations
