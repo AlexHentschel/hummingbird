@@ -1,4 +1,33 @@
-## Goal
+# Project Hummingbird
+
+Ever had a “smart” device suddenly stop working because the cloud service behind it disappeared? It’s frustrating — and a reminder that too many connected devices depend on centralized platforms to function.
+
+Together with [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127) and [Jan](https://www.linkedin.com/in/janbernatik), I’ve been exploring a different model: what if your devices listened to your smart contract, not someone else’s server?
+
+That’s the idea behind Project Hummingbird, our Flow hackathon project. It’s a small but meaningful step toward decentralized, user-owned automation for the real world. 
+
+### Why a hummingbird feeder?
+
+Wild hummingbirds love the mild climate of coastal British Columbia. In cities like Vancouver, they rely on sugar-water feeders during rare cold snaps. To keep the nectar from freezing, people often use heat strips or lamps — but most setups are either wasteful (always on) or unreliable (we forget to turn them on).
+
+So we asked: what if a blockchain smart contract could manage that heating automatically, turning it on only when temperatures drop?
+
+### We’re building
+
+This week’s hackathon project is a complete system:
+
+A control logic for the hummingbird feeder running on Flow as a smart contract
+An oracle feeding real-time temperature data into the blockchain
+A physical controller listening for blockchain events and flipping a switch—powering the feeder heater only when it’s actually needed
+It’s a small, tangible proof of concept of how a blockchain can manage real-world devices efficiently, securely, and independently of centralized platforms.
+
+### Why it matters
+
+Project Hummingbird is just the beginning. Imagine resilient blockchain infrastructure controlling the charging of electric cars, operating smart homes, and coordinating decentralized renewable energy production — optimizing energy use, saving costs, and empowering users to control their own data and devices. If you're curious, check out my post: [Blockchain for Decentralized Critical Infrastructure for the broader vision.](https://www.linkedin.com/pulse/blockchain-decentralized-critical-infrastructure-alexander-hentschel-kfvgc/)
+
+
+
+# Technical Proof of Concept
 Implement a proof of concept for a microcontroller streaming event data from the [official flow endpoints](https://developers.flow.com/networks/access-onchain-data/websockets-stream-api). 
 For efficiency reasons, we want to stream the events via a websockets subscription as this is much less resource intensive for both the server and the client as opposed to polling. 
 
@@ -12,10 +41,14 @@ For efficiency reasons, we want to stream the events via a websockets subscripti
 _Dependencies:_
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library by Benoit Blanchon for parsing json
 
+## Results and Technical Demonstrator
+
+🎥 Watch the [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of Project Hummingbird: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events.
+
 ![alt-text-1](image1.png "title-1") ![alt-text-2](image2.png "title-2")
 
 
-## developer recommendations
+## recommendations
 
 ### `WiFiCredentials.h`
 
