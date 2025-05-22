@@ -12,6 +12,23 @@ For efficiency reasons, we want to stream the events via a websockets subscripti
 _Dependencies:_
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library by Benoit Blanchon for parsing json
 
+![alt-text-1](image1.png "title-1") ![alt-text-2](image2.png "title-2")
+
+
+## developer recommendations
+
+### `WiFiCredentials.h`
+
+The files `iFiCredentials.h` will need to be modified by providing ifi ssid and password. To avoid accidentally committing private information, this short `bash` command provides a simple solution:
+```bash
+for file in $(find . -type f -name "WiFiCredentials\.h"); do
+ git update-index --skip-worktree  "${file}"; done 
+```
+following the approach described here in https://compiledsuccessfully.dev/git-skip-worktree/
+
+
+
+
 
 ## Areas for future development
 
