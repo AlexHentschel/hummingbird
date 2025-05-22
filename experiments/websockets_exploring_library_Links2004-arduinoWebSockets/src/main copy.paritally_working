@@ -1,0 +1,211 @@
+#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+
+// WIFI
+#include "WiFiCredentials.h"
+
+const char *host = "rest-testnet.onflow.org";
+const int port = 443;
+const char *path = "/v1/ws";
+
+WiFiClientSecure client;
+String wsBuffer = "";     // holds full message as it arrives
+bool wsReceiving = false; // tracks whether we’re in a multi-frame message
+
+// Send WebSocket frame
+void sendWebSocketFrame(WiFiClientSecure &client, const String &payload) {
+  const uint8_t opcode = 0x1; // text frame
+  uint8_t header[10];
+  size_t payloadLength = payload.length();
+  size_t headerSize = 2;
+  uint8_t maskKey[4];
+
+  // Construct header
+  header[0] = 0x80 | opcode; // FIN + opcode
+  if (payloadLength <= 125) {
+    header[1] = 0x80 | payloadLength;
+  } else if (payloadLength <= 65535) {
+    header[1] = 0x80 | 126;
+    header[2] = (payloadLength >> 8) & 0xFF;
+    header[3] = payloadLength & 0xFF;
+    headerSize += 2;
+  } else {
+    Serial.println("❌ Payload too large");
+    return;
+  }
+
+  // Generate random mask key
+  for (int i = 0; i < 4; ++i) {
+    maskKey[i] = random(0, 256);
+    header[headerSize++] = maskKey[i];
+  }
+
+  // Send header
+  client.write(header, headerSize);
+
+  // Send masked payload
+  for (size_t i = 0; i < payloadLength; ++i) {
+    client.write(payload[i] ^ maskKey[i % 4]);
+  }
+
+  Serial.println("📤 Sent WebSocket text frame");
+}
+
+// Prepare and send subscription message
+void sendSubscribeMessage() {
+  StaticJsonDocument<512> doc;
+  doc["subscription_id"] = "20charIDStreamEvents";
+  doc["action"] = "subscribe";
+  doc["topic"] = "events";
+  JsonObject args = doc.createNestedObject("arguments");
+  args["heartbeat_interval"] = "5";
+  JsonArray types = args.createNestedArray("event_types");
+  types.add("A.912d5440f7e3769e.FlowFees.FeesDeducted");
+  types.add("A.8c5303eaa26202d6.EVM.BlockExecuted");
+
+  String json;
+  serializeJson(doc, json);
+  Serial.println("📝 JSON payload:");
+  Serial.println(json);
+
+  sendWebSocketFrame(client, json);
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println("Connecting to WiFi...");
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n✅ WiFi connected");
+
+  // Accept all certs (insecure, but works for dev)
+  client.setInsecure();
+
+  Serial.printf("Connecting to %s:%d\n", host, port);
+  if (!client.connect(host, port)) {
+    Serial.println("❌ Connection to server failed!");
+    return;
+  }
+
+  // WebSocket HTTP upgrade request
+  String req = String("GET ") + path + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "Upgrade: websocket\r\n" +
+               "Connection: Upgrade\r\n" +
+               "Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==\r\n" +
+               "Sec-WebSocket-Version: 13\r\n" +
+               "Origin: https://rest-testnet.onflow.org\r\n" +
+               "\r\n";
+
+  client.print(req);
+  Serial.println("🛰️ Sent WebSocket handshake");
+
+  // Wait for response
+  while (client.connected() && !client.available())
+    delay(10);
+  Serial.println("📩 Handshake response:");
+  while (client.available()) {
+    String line = client.readStringUntil('\n');
+    Serial.print(line);
+    if (line == "\r") break;
+  }
+  Serial.println("💡 End of HTTP headers");
+
+  // Send subscribe message
+  sendSubscribeMessage();
+}
+
+void loop() {
+  if (!client.connected()) {
+    Serial.println("⚠️ Lost connection");
+    delay(1000);
+    return;
+  }
+
+  if (!client.available()) return;
+
+  // --- Parse WebSocket Frame Header ---
+  uint8_t firstByte = client.read();
+  uint8_t secondByte = client.read();
+
+  bool isFinal = firstByte & 0x80;
+  uint8_t opcode = firstByte & 0x0F;
+
+  uint64_t payloadLength = secondByte & 0x7F;
+  if (payloadLength == 126) {
+    payloadLength = ((uint64_t)client.read() << 8) | client.read();
+  } else if (payloadLength == 127) {
+    Serial.println("❌ 64-bit payloads not supported in this example");
+    return;
+  }
+
+  // Serial.printf("📦 Frame payload length: %llu bytes\n", payloadLength);
+
+  // --- Read payload incrementally ---
+  String payload = "";
+  uint64_t bytesRead = 0;
+  while (bytesRead < payloadLength) {
+    if (client.available()) {
+      char c = client.read();
+      payload += c;
+      bytesRead++;
+    } else {
+      delay(1);
+    }
+  }
+
+  // --- Handle opcodes ---
+  if (opcode == 0x1) { // Text frame, possibly first of multi-frame message
+    wsBuffer = payload;
+    wsReceiving = !isFinal;
+  } else if (opcode == 0x0 && wsReceiving) { // Continuation frame
+    wsBuffer += payload;
+    wsReceiving = !isFinal;
+  } else {
+    Serial.printf("⚠️ Unsupported frame opcode: 0x%02X\n", opcode);
+    return;
+  }
+
+  if (!wsReceiving) {
+    // Serial.println("📥 Full WebSocket message:");
+    // Serial.println(wsBuffer);
+
+    // --- Parse JSON ---
+    StaticJsonDocument<16384> doc;
+    DeserializationError error = deserializeJson(doc, wsBuffer);
+
+    if (error) {
+      Serial.print("❌ JSON parse failed: ");
+      Serial.println(error.c_str());
+      return;
+    }
+
+    const char *topic = doc["topic"];
+    if (topic && strcmp(topic, "events") == 0) {
+      long blockHeight = atol(doc["payload"]["block_height"]);
+      JsonArray events = doc["payload"]["events"];
+      if (events.size() == 0) {
+        Serial.printf("⏳ Heartbeat @ block %ld\n", blockHeight);
+      } else {
+        Serial.printf("🔔 Block %ld, %d event(s):\n", blockHeight, events.size());
+        for (JsonObject evt : events) {
+          const char *type = evt["type"];
+          const char *txid = evt["transaction_id"];
+          Serial.printf("  • %s  tx=%.*s…\n", type, 8, txid);
+        }
+      }
+    } else {
+      Serial.println("⚙️ Non-event message:");
+      serializeJsonPretty(doc, Serial);
+    }
+
+    // Reset buffer
+    wsBuffer = "";
+  }
+}
