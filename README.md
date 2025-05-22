@@ -16,14 +16,23 @@ So we asked: what if a blockchain smart contract could manage that heating autom
 
 This week’s hackathon project is a complete system:
 
-A control logic for the hummingbird feeder running on Flow as a smart contract
-An oracle feeding real-time temperature data into the blockchain
-A physical controller listening for blockchain events and flipping a switch—powering the feeder heater only when it’s actually needed
+- A **smart contract** on Flow that contains the control logic for the feeder.
+- An **oracle** that feeds temperature data into the blockchain.
+- A physical **microcontroller** that listens for blockchain events and powers the feeder heater only when it’s actually needed.
+
 It’s a small, tangible proof of concept of how a blockchain can manage real-world devices efficiently, securely, and independently of centralized platforms.
+
 
 ### Why it matters
 
-Project Hummingbird is just the beginning. Imagine resilient blockchain infrastructure controlling the charging of electric cars, operating smart homes, and coordinating decentralized renewable energy production — optimizing energy use, saving costs, and empowering users to control their own data and devices. If you're curious, check out my post: [Blockchain for Decentralized Critical Infrastructure for the broader vision.](https://www.linkedin.com/pulse/blockchain-decentralized-critical-infrastructure-alexander-hentschel-kfvgc/)
+Project Hummingbird is just the beginning. Imagine resilient blockchain infrastructure controlling the charging of electric cars, operating smart homes, and coordinating decentralized renewable energy production — optimizing energy use, saving costs, and empowering users to control their own data and devices. 
+
+If you're curious, please check out: 
+* 🎥 my [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of **Project Hummingbird**: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events. In this 10-minute video, you'll get an overview over hackathon project, an end-to-end demo, the broader vision and why Flow is uniquely suited for this class of applications. 
+* my blog post [Blockchain for Decentralized Critical Infrastructure](https://www.linkedin.com/pulse/blockchain-decentralized-critical-infrastructure-alexander-hentschel-kfvgc/) is a concise but in-depth vision. 
+
+
+
 
 
 
@@ -31,28 +40,44 @@ Project Hummingbird is just the beginning. Imagine resilient blockchain infrastr
 Implement a proof of concept for a microcontroller streaming event data from the [official flow endpoints](https://developers.flow.com/networks/access-onchain-data/websockets-stream-api). 
 For efficiency reasons, we want to stream the events via a websockets subscription as this is much less resource intensive for both the server and the client as opposed to polling. 
 
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="270" />
+  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="270" />
+  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="270" /> 
+</p>
+
+
+Project Hummingbird is a collaboration between [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik), and [me](https://www.linkedin.com/in/alexander-hentschel/), building on our shared interest in decentralized automation and resilient infrastructure. Please check out their GitHub repos:
+* [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
+   - Initial concept for getting the height of the latest sealed or latest finalized block.
+   - [Cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird.
+   - Logic for preparing a cadence transaction to provide new inputs to the on-chain orchestrator; we directly use this in Project Hummingbird.
+   - First working prototype for getting chain data via script execution from an Access Node; we build on Janes' work in Project Hummingbird to restore the microcontroller's initial state after rebooting.
+* [j1010001/Flow-esp32-s3-touch-lcd-1.28](https://github.com/j1010001/Flow-esp32-s3-touch-lcd-1.28) 
+   - Human-friendly UX: querying the chain state (specifically sealed block via Flow Access Node API), and inspecting smart contract sate details via script execution. Interacting with the blockchain - and controlling your devices via the Flow blockchain - can be as easy as just tapping your smartwatch. 
+
+
+
 
 ## Setup
 * We are working with the _Arduino Nano ESP32_ developer board: the board features the NORA-W106, a module with a ESP32-S3 chip inside. This module supports both Wi-Fi and Bluetooth. 
-* You need a USB-C cable, the Arduino Nano ESP32, and Wifi access
+* You need a USB-C cable, the Arduino Nano ESP32, and Wi-Fi access
 * I have used [pioarduino](https://github.com/pioarduino) (a fork of [platformio](https://platformio.org/)) as Visual Studio Code [VS Code] extension ([tutorial](https://randomnerdtutorials.com/vs-code-pioarduino-ide-esp32/)). It is important to note that for our hardware (ESP32-S3) we require the ESP32 Arduino Core (version 3). The [pioarduino](https://github.com/pioarduino) fork was initially created to support the newer ESP32-S3 processors - though by now they seem to also be supported by [platformio](https://platformio.org/) (not tested).
 * We are working in C / C++
 
 _Dependencies:_
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library by Benoit Blanchon for parsing json
 
-## Results and Technical Demonstrator
+_Flow_:
+* Our proof of concept runs on the [Flow blockchain](https://flow.com/), specifically the [Flow Testnet](https://developers.flow.com/networks/flow-networks/accessing-testnet). 
 
-🎥 Watch the [**demo video**](https://youtu.be/d3rSHN_p8u0?feature=shared) of Project Hummingbird: a Flow-based smart contract switching a 110V AC mainline load (E27 light bulb) via blockchain events.
-
-![alt-text-1](image1.png "title-1") ![alt-text-2](image2.png "title-2")
 
 
 ## recommendations
 
 ### `WiFiCredentials.h`
 
-The files `WiFiCredentials.h` will need to be modified by providing ifi ssid and password. Currently, the implementation expects the following parameters: 
+The files `WiFiCredentials.h` will need to be modified by providing Wi-Fi ssid and password. Currently, the implementation expects the following parameters: 
 ```
 #define WIFI_SSID "..."
 #define WIFI_PASS "..."
