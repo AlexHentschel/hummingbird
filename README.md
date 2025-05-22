@@ -16,10 +16,12 @@ So we asked: what if a blockchain smart contract could manage that heating autom
 
 This week’s hackathon project is a complete system:
 
-A control logic for the hummingbird feeder running on Flow as a smart contract
-An oracle feeding real-time temperature data into the blockchain
-A physical controller listening for blockchain events and flipping a switch—powering the feeder heater only when it’s actually needed
+- A **smart contract** on Flow that contains the control logic for the feeder.
+- An **oracle** that feeds temperature data into the blockchain.
+- A physical **microcontroller** that listens for blockchain events and powers the feeder heater only when it’s actually needed.
+
 It’s a small, tangible proof of concept of how a blockchain can manage real-world devices efficiently, securely, and independently of centralized platforms.
+
 
 ### Why it matters
 
@@ -45,7 +47,9 @@ For efficiency reasons, we want to stream the events via a websockets subscripti
 </p>
 
 
-This is **joint work** of **[Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127)**, **[Jan](https://www.linkedin.com/in/janbernatik)** and **myself**. Please check out their GitHub repos:
+Project Hummingbird is a collaboration between [Janez](https://www.linkedin.com/in/janez-podhostnik-40915b127), [Jan](https://www.linkedin.com/in/janbernatik), and [me](https://www.linkedin.com/in/alexander-hentschel/), building on our shared interest in decentralized automation and resilient infrastructure. 
+
+This is **joint work** of ****, **** and **myself**. Please check out their GitHub repos:
 * [janezpodhostnik/esp32-flow](https://github.com/janezpodhostnik/esp32-flow) for 
    - Initial concept for getting the height of the latest sealed or latest finalized block.
    - [Cadence smart contract](https://github.com/janezpodhostnik/esp32-flow/tree/main/cadence) that orchestrates Project Hummingbird.
@@ -59,7 +63,7 @@ This is **joint work** of **[Janez](https://www.linkedin.com/in/janez-podhostnik
 
 ## Setup
 * We are working with the _Arduino Nano ESP32_ developer board: the board features the NORA-W106, a module with a ESP32-S3 chip inside. This module supports both Wi-Fi and Bluetooth. 
-* You need a USB-C cable, the Arduino Nano ESP32, and Wifi access
+* You need a USB-C cable, the Arduino Nano ESP32, and Wi-Fi access
 * I have used [pioarduino](https://github.com/pioarduino) (a fork of [platformio](https://platformio.org/)) as Visual Studio Code [VS Code] extension ([tutorial](https://randomnerdtutorials.com/vs-code-pioarduino-ide-esp32/)). It is important to note that for our hardware (ESP32-S3) we require the ESP32 Arduino Core (version 3). The [pioarduino](https://github.com/pioarduino) fork was initially created to support the newer ESP32-S3 processors - though by now they seem to also be supported by [platformio](https://platformio.org/) (not tested).
 * We are working in C / C++
 
@@ -75,7 +79,7 @@ _Flow_:
 
 ### `WiFiCredentials.h`
 
-The files `WiFiCredentials.h` will need to be modified by providing ifi ssid and password. Currently, the implementation expects the following parameters: 
+The files `WiFiCredentials.h` will need to be modified by providing Wi-Fi ssid and password. Currently, the implementation expects the following parameters: 
 ```
 #define WIFI_SSID "..."
 #define WIFI_PASS "..."
