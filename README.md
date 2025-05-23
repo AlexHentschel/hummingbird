@@ -60,10 +60,22 @@ Project Hummingbird is a collaboration between [Janez](https://www.linkedin.com/
 
 
 ## Setup
-* We are working with the _Arduino Nano ESP32_ developer board: the board features the NORA-W106, a module with a ESP32-S3 chip inside. This module supports both Wi-Fi and Bluetooth. 
+* We are working with the [Arduino Nano ESP32](https://docs.arduino.cc/hardware/nano-esp32/) developer board: the board features the NORA-W106, a module with a ESP32-S3 chip inside. This module supports both Wi-Fi and Bluetooth.
+* We are working in C++
 * You need a USB-C cable, the Arduino Nano ESP32, and Wi-Fi access
 * I have used [pioarduino](https://github.com/pioarduino) (a fork of [platformio](https://platformio.org/)) as Visual Studio Code [VS Code] extension ([tutorial](https://randomnerdtutorials.com/vs-code-pioarduino-ide-esp32/)). It is important to note that for our hardware (ESP32-S3) we require the ESP32 Arduino Core (version 3). The [pioarduino](https://github.com/pioarduino) fork was initially created to support the newer ESP32-S3 processors - though by now they seem to also be supported by [platformio](https://platformio.org/) (not tested).
-* We are working in C / C++
+* To power the microcontroller independently of a computer, I used an old 5V / 850mA USB power adapter. ⚠️ Always ensure your power source is stable and within rated input range (6-21 V for the Arduino Nano ESP32).
+* We are switching a 110V AC 50Hz mainline: 
+   * OMRON G3MB-202P Solid State Relay (rated for switching up to 240V AC @ 2A, requiring 5V input).
+   * The GPIO pins of the microcontroller operate at 3.3V. Therefore, we use the GPIO pin to switch an IRL530 (N-Mosfet), which in turn switches the 5V input for the Omron Solid State Relay. 
+   * 220Ω resistor for limiting the current flow on the GPIO+ 100 kΩ (edited).
+   * 100 kΩ pull-down resistor
+   * fuse for mainline 
+
+    <details>
+    <summary>Circuit Diagram</summary>
+    <img src="https://github.com/user-attachments/assets/219f62e6-fe00-432a-80ef-15a0093297ad" height="400" />
+    </details>
 
 _Dependencies:_
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library by Benoit Blanchon for parsing json
