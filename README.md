@@ -41,9 +41,9 @@ Implement a proof of concept for a microcontroller streaming event data from the
 For efficiency reasons, we want to stream the events via a websockets subscription as this is much less resource intensive for both the server and the client as opposed to polling. 
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="270" />
-  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="270" />
-  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="270" /> 
+  <img src="https://github.com/user-attachments/assets/ce2d009e-8de9-40db-b36e-20ca27fe0f77" height="222" />
+  <img src="https://github.com/user-attachments/assets/da5b41cd-365c-4a99-9105-15b617c6582c" height="222" />
+  <img src="https://github.com/user-attachments/assets/b6530b9a-1f66-4990-8b50-1e6fa4cfdf23" height="222" /> 
 </p>
 
 
@@ -112,14 +112,14 @@ following the approach described here in https://compiledsuccessfully.dev/git-sk
 
 :construction: This code is a proof of concept not ready for production applications! :construction:
 
-### Short term: using SSL connection and established websockets library
+#### Short-term: using SSL connection and established websockets library
 
 * Websockets client implementation: There exist established libraries such as the [WebSockets](https://github.com/Links2004/arduinoWebSockets) library by Markus Sattler and collaborators (my understanding is that this is by far the most broadly adopted and performant library). Unfortunately, I ran into major obstacles when receiving data from the Flow websockets endpoint (see [Readme.md](./experiments/websockets_exploring_library_Links2004-arduinoWebSockets/README.md) in the `experiments` folder). Currently, this code works, but I am suspecting that we are still rarely missing events.
 * Currently, we are using Access Node `access-001.devnet52.nodes.onflow.org`, which is operated by the Flow Foundation FOR TESTNET and permits plain-text websocket connections. The different protocol versions of testnet are internally called `devnet52<Number>`. In comparison, `rest-testnet.onflow.org` references the current official testnet version. As of May 15, 2025 this is identical to `devnet52` (future version will have a higher version number). However, `rest-testnet.onflow.org` are operated by service providers and the connection (plain text as well as ssl-encrypted) tends to break after some seconds ... strangely `rest-mainnet.onflow.org` does not seem to have this problem. 
 * Plain-text: we communicate in plain-text with the Access Node (currently `access-001.devnet52.nodes.onflow.org`). The code already has some support for ssl-based connections (currently working reasonably reliably with `rest-mainnet.onflow.org`), but more testing is necessary.
 
 
-### Mid term: trustless data retrieval with event proofs
+#### Mid-term: trustless data retrieval with event proofs
 
 At the moment, the microcontroller trusts the access node to provide an honest data stream. In principle, Flow allows event proofs that are very light weight so they could be verified by the microcontroller. Fur further details:
 * [Flow's Data Availability Vision → Smartphone-sized light clients](https://flow.com/data-availability-vision#smartphone-sized-light-clients)
@@ -129,13 +129,13 @@ At the moment, the microcontroller trusts the access node to provide an honest d
 <details>
 <summary>State of the art research on running pairing-based cryptography on microcontrollers</summary>
 
-### Research Papers
+#### Research Papers
 - Paper: [Applications of Pairing-based Cryptography on Automotive-grade Microcontrollers](https://ats-automotive-engineering.com/wp-content/uploads/2025/01/Applications-of-Pairing-based-Cryptography-on-Automotive-grade-Microcontrollers.pdf) [2018]
 - Paper: [Performance Evaluation of Elliptic Curve Libraries on Automotive-Grade Microcontrollers](https://www.aut.upt.ro/~pal-stefan.murvay/papers/performance_evaluation_elliptic_curve_libraries_automotive-grade_microcontrollers.pdf) [2019]
    
     - they use Relic and BLS-381 (the curve we are using)
         
-        ![Screenshot 2025-04-29 at 12.55.17 PM.png](Smart-home%20IOT%201e41aee1232480b98790e854c04d256f/Screenshot_2025-04-29_at_12.55.17_PM.png)
+        ![](Smart-home%20IOT%201e41aee1232480b98790e854c04d256f/Screenshot_2025-04-29_at_12.55.17_PM.png)
         
 - Paper: [Performance Comparison Of ECC Libraries For IOT Devices](https://dergipark.org.tr/tr/download/article-file/3690885) [2024] - shallow level of detail
 - Paper: [Tiny keys hold big secrets: On efficiency of Pairing-Based Cryptography in IoT](https://doi.org/10.1016/j.iot.2025.101489)
@@ -169,7 +169,7 @@ At the moment, the microcontroller trusts the access node to provide an honest d
 </details>
 
 
-### Long term: Data privacy 
+#### Long-term: Data privacy 
 
 Encrypting on-chain orchestrators via  [garbled circuit](https://en.wikipedia.org/wiki/Garbled_circuit), [monomorphic encryption](https://en.wikipedia.org/wiki/Homomorphic_encryption) or some other [secure multi-party computation [MPC]](https://en.wikipedia.org/wiki/Secure_multi-party_computation) approach. For most use-cases except the most trivial, MPC would likely require a privacy-layer needing to be added to Flow. 
 
